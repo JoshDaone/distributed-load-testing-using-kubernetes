@@ -13,30 +13,32 @@
 # limitations under the License.
 
 
-apiVersion: "extensions/v1beta1"
-kind: "Deployment"
+apiVersion: v1
+kind: ReplicationController
 metadata:
   name: locust-master
   labels:
-    name: locust-master
+    name: locust
+    role: master
 spec:
   replicas: 1
   selector:
-    matchLabels:
-      app: locust-master
+    name: locust
+    role: master
   template:
     metadata:
       labels:
-        app: locust-master
+        name: locust
+        role: master
     spec:
       containers:
-        - name: locust-master
-          image: gcr.io/[PROJECT_ID]/locust-tasks:latest
+        - name: locust
+          image: gcr.io/cloud-solutions-images/locust-tasks:latest
           env:
             - name: LOCUST_MODE
               value: master
             - name: TARGET_HOST
-              value: https://[TARGET_HOST]
+              value: http://10.0.194.251:9080
           ports:
             - name: loc-master-web
               containerPort: 8089
